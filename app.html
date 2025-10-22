@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>TikZ Editor</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div id="app"></div>
+    <script src="main.js"></script>
+    <script>
+        const STORAGE_KEY = 'tikz-files';
+
+        // Initialize Elm app
+        const app = Elm.Main.init({
+            node: document.getElementById('app')
+        });
+
+        // Load files from localStorage on startup
+        function loadFiles() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if (stored) {
+                try {
+                    const files = JSON.parse(stored);
+                    app.ports.loadFiles.send(files);
+                } catch (e) {
+                    console.error('Error loading files from localStorage:', e);
+                    app.ports.loadFiles.send({});
+                }
+            } else {
+                app.ports.loadFiles.send({});
+            }
+        }
+
+        // Save files to localStorage
+        app.ports.saveFiles.subscribe(function(files) {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(files));
+                console.log('Files saved to localStorage');
+            } catch (e) {
+                console.error('Error saving files to localStorage:', e);
+            }
+        });
+
+        // Load initial files
+        loadFiles();
+    </script>
+</body>
+</html>
