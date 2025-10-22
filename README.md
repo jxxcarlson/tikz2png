@@ -59,16 +59,14 @@ src/
   Main.elm              - Main application logic
   Data.elm              - Initial example TikZ files
   LatexToTikzJson.elm   - LaTeX/TikZ parser and JSON encoder
-app.html                - HTML with localStorage port integration
-elm.json                - Elm dependencies
+  app.html              - HTML with localStorage port integration
+  elm.json              - Elm dependencies
 ```
 
 ## Tech Stack
 
 - Elm 0.19.1
 - elm/file for file operations
-- elm/http for server communication
-- elm/time for progress tracking
 - JavaScript ports for localStorage persistence
 
 ## Usage
