@@ -30,7 +30,7 @@ The app expects a POST endpoint that accepts:
 {
   "name": "filename",
   "content": "\\begin{tikzpicture}...",
-  "preamble": "\\usetikzlibrary{...}"Ωadd
+  "preamble": "\\usetikzlibrary{...}"
 }
 ```
 
