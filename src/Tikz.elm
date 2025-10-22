@@ -1,6 +1,10 @@
-module Tikz exposing ( jsonForTikzRequest)
+module Tikz exposing ( jsonForTikzRequest, sendTikzRequest)
 
-{-| Convert a LaTeX document to JSON format for the /tikz2png endpoint.
+{-|
+
+Convert a LaTeX document to JSON format for the /tikz2png endpoint.
+If successful, the response will contain a URL for the generated PNG image.
+
 
 Example usage:
 
@@ -19,7 +23,12 @@ Example usage:
 
 -}
 
+import Json.Decode as Decode exposing (Decoder)
 import Json.Encode as Encode
+import Http
+import Types exposing (TikzResponse(..))
+
+
 
 
 type alias TikzRequest =
@@ -148,7 +157,25 @@ extractPreamble beforeBegin =
     else
         Just preambleText
 
+sendTikzRequest : String -> String -> String -> Cmd Types.Msg
+sendTikzRequest serverUrl name content =
+    Http.post
+        { url = serverUrl
+        , body = Http.jsonBody (encodeTikzRequest (parseLatexDocument name content))
+        , expect = Http.expectJson Types.GotResponse tikzResponseDecoder
+        }
 
+
+tikzResponseDecoder : Decoder TikzResponse
+tikzResponseDecoder =
+    Decode.oneOf
+        [ Decode.map2 TikzSuccess
+            (Decode.field "name" Decode.string)
+            (Decode.field "url" Decode.string)
+        , Decode.map2 TikzError
+            (Decode.field "name" Decode.string)
+            (Decode.field "errorMsg" Decode.string)
+        ]
 
 
 

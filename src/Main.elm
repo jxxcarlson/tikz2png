@@ -14,6 +14,7 @@ import Http
 import Json.Decode as Decode exposing (Decoder)
 import Json.Encode as Encode
 import Tikz
+import Types exposing(Msg(..), TikzResponse(..))
 import Task
 import Time exposing (Posix)
 
@@ -73,20 +74,6 @@ init _ =
 
 -- UPDATE
 
-type Msg
-    = TextChanged String
-    | NameChanged String
-    | SendRequest
-    | GotResponse (Result Http.Error TikzResponse)
-    | Tick Posix
-    | SelectFile String
-    | DeleteFile String
-    | ImportFile
-    | FileSelected File
-    | FileLoaded String String
-    | SaveFile
-    | NewFile
-    | FilesFromStorage Encode.Value
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -103,7 +90,7 @@ update msg model =
                 | requestStartTime = Just model.currentTime
                 , requestElapsedTime = Nothing
               }
-            , sendTikzRequest model.serverUrl model.name model.textInput
+            , Tikz.sendTikzRequest model.serverUrl model.name model.textInput
             )
 
         GotResponse result ->
@@ -145,7 +132,7 @@ update msg model =
                             }
                     in
                     ( updatedModel
-                    , sendTikzRequest updatedModel.serverUrl updatedModel.name content
+                    , Tikz.sendTikzRequest updatedModel.serverUrl updatedModel.name content
                     )
 
                 Nothing ->
@@ -204,7 +191,7 @@ update msg model =
             ( updatedModel
             , Cmd.batch
                 [ saveFiles (encodeFiles updatedFiles)
-                , sendTikzRequest updatedModel.serverUrl nameWithoutExtension content
+                , Tikz.sendTikzRequest updatedModel.serverUrl nameWithoutExtension content
                 ]
             )
 
@@ -312,18 +299,7 @@ decodeFiles value =
 
 -- HTTP
 
-type TikzResponse
-    = TikzSuccess String String
-    | TikzError String String
 
-
-sendTikzRequest : String -> String -> String -> Cmd Msg
-sendTikzRequest serverUrl name content =
-    Http.post
-        { url = serverUrl
-        , body = Http.jsonBody (encodeTikzRequest name content)
-        , expect = Http.expectJson GotResponse tikzResponseDecoder
-        }
 
 
 encodeTikzRequest : String -> String -> Encode.Value
@@ -331,16 +307,6 @@ encodeTikzRequest name content =
     Tikz.jsonForTikzRequest name content
 
 
-tikzResponseDecoder : Decoder TikzResponse
-tikzResponseDecoder =
-    Decode.oneOf
-        [ Decode.map2 TikzSuccess
-            (Decode.field "name" Decode.string)
-            (Decode.field "url" Decode.string)
-        , Decode.map2 TikzError
-            (Decode.field "name" Decode.string)
-            (Decode.field "errorMsg" Decode.string)
-        ]
 
 
 -- VIEW
