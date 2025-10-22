@@ -5,6 +5,7 @@ tikz = [
   ("graph.tikz", graph)
   ,("complete-graph.tikz", completeGraph)
   ,("spheres.tikz", spheres)
+  , ("lindemayer.tikz", lindemayer)
   ]
 
 graph = """
@@ -103,3 +104,26 @@ spheres = """
 \\end{tikzpicture}%
 """
 
+lindemayer = """
+% \\RequirePackage{luatex85} % Only for LuaLaTeX and standalone class
+\\documentclass[varwidth,border=5]{standalone}
+\\usepackage{tikz}
+\\usetikzlibrary{lindenmayersystems}
+\\pgfdeclarelindenmayersystem{square fractal}{%
+  \\symbol{S}{\\pgflsystemstep=0.5\\pgflsystemstep}
+  \\symbol{A}{\\pgftransformshift%
+    {\\pgfqpoint{0.75\\pgflsystemstep}{0.75\\pgflsystemstep}}}
+  \\symbol{R}{\\pgftransformrotate{90}}
+  \\symbol{Q}{%
+    \\pgfpathrectangle{\\pgfqpoint{-0.5\\pgflsystemstep}{-0.5\\pgflsystemstep}}%
+    {\\pgfqpoint{\\pgflsystemstep}{\\pgflsystemstep}}%
+  }
+  \\rule{Q -> [SQ[ASQ][RASQ][RRASQ][RRRASQ]]}
+}
+
+\\begin{document}
+% Draw the square-fractal L-system for order = 3 only
+\\tikz \\fill [l-system={square fractal, step=5cm, axiom=Q, order=3}]%
+  lindenmayer system;
+\\end{document}
+"""

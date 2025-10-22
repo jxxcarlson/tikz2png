@@ -4,12 +4,11 @@ A web-based TikZ editor with real-time PNG rendering. Edit TikZ code in your bro
 
 ## Features
 
-- **Three-panel interface**: File list, code editor, and image preview
-- **File management**: Create, import, and save TikZ files with localStorage persistence
-- **Live rendering**: Automatic rendering on file selection and manual render button
-- **Progress tracking**: Visual progress indicator (0-10 second thermometer)
-- **Smart parsing**: Handles both raw TikZ code and full LaTeX documents
-- **Example files**: Three starter examples included (graph, complete-graph, spheres)
+
+- **Files**: Create, import, and save TikZ files with localStorage persistence
+- **Live rendering**: Automatic rendering on file selection + manual render button
+- **File format**: Handles both raw TikZ code and full LaTeX documents
+- **Example files**: Three starter examples (graph, complete-graph, spheres, lindenmayer)
 
 ## Quick Start
 
@@ -31,7 +30,7 @@ The app expects a POST endpoint that accepts:
 {
   "name": "filename",
   "content": "\\begin{tikzpicture}...",
-  "preamble": "\\usetikzlibrary{...}" // optional
+  "preamble": "\\usetikzlibrary{...}"Ωadd
 }
 ```
 
