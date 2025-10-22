@@ -13,7 +13,7 @@ import Json.Decode as Decode
 import Http
 import Json.Decode as Decode exposing (Decoder)
 import Json.Encode as Encode
-import LatexToTikzJson
+import Tikz
 import Task
 import Time exposing (Posix)
 
@@ -328,11 +328,7 @@ sendTikzRequest serverUrl name content =
 
 encodeTikzRequest : String -> String -> Encode.Value
 encodeTikzRequest name content =
-    --Encode.object
-    --    [ ( "name", Encode.string name )
-    --    , ( "content", Encode.string content )
-    --    ]
-    LatexToTikzJson.jsonForTikzRequest name content
+    Tikz.jsonForTikzRequest name content
 
 
 tikzResponseDecoder : Decoder TikzResponse

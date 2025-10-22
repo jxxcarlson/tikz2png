@@ -80,3 +80,10 @@ src/
 ## License
 
 MIT
+
+
+## Credits
+
+- Complete Graph: https://texample.net/complete-graph/ by Jean-Noel Quintin
+- Spheres: /example.net/rotatedsphere/ by kazumath
+- Koch: https://tikz.dev/library-lsystems 

@@ -1,4 +1,4 @@
-module LatexToTikzJson exposing ( jsonForTikzRequest)
+module Tikz exposing ( jsonForTikzRequest)
 
 {-| Convert a LaTeX document to JSON format for the /tikz2png endpoint.
 
