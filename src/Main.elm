@@ -6,9 +6,10 @@ import Dict exposing (Dict)
 import File exposing (File)
 import File.Download as Download
 import File.Select as Select
-import Html exposing (Html, div, textarea, img, button, text, input, label)
+import Html exposing (Html, div, textarea, img, button, text, input, label, span)
 import Html.Attributes exposing (style, placeholder, value, src, type_)
-import Html.Events exposing (onInput, onClick)
+import Html.Events exposing (onInput, onClick, stopPropagationOn)
+import Json.Decode as Decode
 import Http
 import Json.Decode as Decode exposing (Decoder)
 import Json.Encode as Encode
@@ -79,6 +80,7 @@ type Msg
     | GotResponse (Result Http.Error TikzResponse)
     | Tick Posix
     | SelectFile String
+    | DeleteFile String
     | ImportFile
     | FileSelected File
     | FileLoaded String String
@@ -148,6 +150,28 @@ update msg model =
 
                 Nothing ->
                     ( model, Cmd.none )
+
+        DeleteFile filename ->
+            let
+                updatedFiles =
+                    Dict.remove filename model.files
+
+                -- Clear selection if deleting the currently selected file
+                updatedModel =
+                    if model.selectedFilename == Just filename then
+                        { model
+                            | files = updatedFiles
+                            , selectedFilename = Nothing
+                            , textInput = ""
+                            , name = "new-file"
+                            , imageUrl = ""
+                            , errorMsg = ""
+                        }
+
+                    else
+                        { model | files = updatedFiles }
+            in
+            ( updatedModel, saveFiles (encodeFiles updatedFiles) )
 
         ImportFile ->
             ( model, Select.file [ "text/plain", ".tikz" ] FileSelected )
@@ -408,8 +432,21 @@ filePanel files selectedFilename =
                                  else
                                     "normal"
                                 )
+                            , style "display" "flex"
+                            , style "justify-content" "space-between"
+                            , style "align-items" "center"
                             ]
-                            [ Html.text filename ]
+                            [ span [] [ Html.text filename ]
+                            , span
+                                [ stopPropagationOn "click" (Decode.succeed ( DeleteFile filename, True ))
+                                , style "cursor" "pointer"
+                                , style "color" "#999"
+                                , style "font-size" "12px"
+                                , style "padding" "2px 6px"
+                                , style "hover" "color: #d32f2f"
+                                ]
+                                [ Html.text "×" ]
+                            ]
                     )
             )
         , button

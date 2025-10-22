@@ -5,7 +5,7 @@ tikz = [
   ("graph.tikz", graph)
   ,("complete-graph.tikz", completeGraph)
   ,("spheres.tikz", spheres)
-  , ("lindemayer.tikz", lindemayer)
+  ,("lindemayer.tikz", lindemayer)
   ]
 
 graph = """
